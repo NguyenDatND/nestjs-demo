@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
-import cookieParser from 'cookie-parser';
+// import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,7 +20,7 @@ async function bootstrap() {
     }),
   );
 
-  app.use(cookieParser());
+  // app.use(cookieParser());`
 
   app.setGlobalPrefix('/api/v1');
 

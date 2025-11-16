@@ -5,8 +5,6 @@ import {
   Inject,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Role, User } from '@prisma/client';
@@ -15,6 +13,7 @@ import { API_COMMON_MSG, API_ERROR_MSG } from 'src/configs/messages/api';
 import type { JwtConfig } from 'src/configs/environment';
 import { Token } from './interfaces/token';
 import { JwtPayload } from './interfaces/jwt-payload';
+import { RefreshTokenDto, LoginDto, RegisterDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -55,6 +54,30 @@ export class AuthService {
       ...tokens,
       expires_in: this.jwtConfiguration.accessTokenTtl,
     };
+  }
+
+  async refreshToken(dto: RefreshTokenDto) {
+    try {
+      const { email } = await this.verifyToken(dto.token);
+      const user = await this.usersService.findByEmail(email);
+      if (!user) throw new UnauthorizedException(API_ERROR_MSG.INVALID_TOKEN);
+
+      const tokens = await this.generateTokens(user);
+
+      return {
+        ...tokens,
+        expires_in: this.jwtConfiguration.accessTokenTtl,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new UnauthorizedException(API_ERROR_MSG.INVALID_TOKEN);
+    }
+  }
+
+  private async verifyToken(token: string): Promise<JwtPayload> {
+    return this.jwtService.verify(token, {
+      secret: this.jwtConfiguration.secret,
+    });
   }
 
   private async generateTokens(user: User): Promise<Token> {

@@ -13,6 +13,7 @@ export const API_ERROR_MSG = {
   WRONG_EMAIL_OR_PASSWORD: 'Wrong email or password',
   EMAIL_ALREADY_EXISTS: 'Email already exists',
   FORBIDDEN_RESOURCE: 'You are not authorized to access this resource',
+  INVALID_TOKEN: 'Invalid token',
 };
 
 export const API_COMMON_MSG = {
