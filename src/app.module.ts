@@ -11,18 +11,20 @@ import { AuthorizationGuard } from './common/guards/authorization';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './configs/environment';
+import { PermisionsModule } from './permisions/permisions.module';
 
 @Module({
   imports: [
-    UsersModule,
-    PrismaModule,
-    AuthModule,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     ConfigModule.forRoot({
       isGlobal: true,
       load: [jwtConfig],
     }),
     JwtModule.registerAsync(jwtConfig.asProvider()),
+    UsersModule,
+    PrismaModule,
+    AuthModule,
+    PermisionsModule,
   ],
   controllers: [AppController],
   providers: [
